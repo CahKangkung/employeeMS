@@ -1,6 +1,7 @@
 const express = require('express');
 const prisma = require('../prisma');
 const { authenticate, requireRole } = require('../middleware/auth.middleware');
+const { logAudit } = require('../utils/auditLog');
 
 const router = express.Router();
 
@@ -56,7 +57,46 @@ router.post('/', requireRole('admin'), async (req, res) => {
     }
 });
 
-const { logAudit } = require('../utils/auditLog');
+// GET /api/employees/export/csv
+router.get('/export/csv', async (req, res) => {
+    const { search, departmentId, status } = req.query;
+
+    const where = {};
+    if (search) where.OR = [
+        { fullName: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+    ];
+    if (departmentId) where.departmentId = Number(departmentId);
+    if (status) where.status = status;
+
+    const employees = await prisma.employee.findMany({
+        where,
+        include: { department: true },
+        orderBy: { createdAt: 'desc' },
+    });
+
+    const headers = ['ID', 'Nama', 'Email', 'Telepon', 'Departemen', 'Status', 'Dibuat'];
+    const escapeCsv = (val) => {
+        if (val === null || val === undefined) return '';
+        const str = String(val);
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+            return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+    };
+
+    const rows = employees.map((e) =>
+        [e.id, e.fullName, e.email, e.phone || '', e.department.name, e.status, e.createdAt.toISOString()]
+            .map(escapeCsv)
+            .join(',')
+    );
+
+    const csv = [headers.join(','), ...rows].join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="employees.csv"');
+    res.send(csv);
+});
 
 // GET /api/employees/:id
 router.get('/:id', async (req, res) => {
