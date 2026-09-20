@@ -11,9 +11,9 @@ Aplikasi web pengelolaan data karyawan (REST API + React) untuk Tugas Rekrutmen 
 
 ## Live Demo
 
-- Frontend: `(in-progress)`
-- Backend API: `(in-progress)`
-- API Docs: `(in-progress)/api-documentation`
+- Frontend: `https://employeems-main.vercel.app/`
+- Backend API: `employeems-backend.up.railway.app`
+- API Docs: `https://employeems-main.vercel.app/api-documentation`
 
 **Akun demo:**
 | Role | Email | Password |

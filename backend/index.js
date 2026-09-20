@@ -6,7 +6,15 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 app.set('trust proxy', 1);
 
-app.use(cors());
+const allowedUrl = [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+].filter(Boolean);
+
+app.use(cors({
+    origin: allowedUrl,
+}));
+
 app.use(express.json());
 
 // Limit

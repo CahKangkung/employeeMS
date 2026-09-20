@@ -81,25 +81,49 @@ function EmployeeList() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="border rounded px-3 py-2 flex-1"
                 />
-                <select
-                    value={departmentId}
-                    onChange={(e) => setDepartmentId(e.target.value)}
-                    className="border rounded px-3 py-2"
-                >
-                    <option value="">Semua Departemen</option>
-                    {departments.map((d) => (
-                    <option key={d.id} value={d.id}>{d.name}</option>
-                    ))}
-                </select>
-                <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="border rounded px-3 py-2"
-                >
-                    <option value="">Semua Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
+                <div className="relative">
+                    <select
+                        value={departmentId}
+                        onChange={(e) => setDepartmentId(e.target.value)}
+                        // className="border rounded px-3 py-2"
+                        className="appearance-none border rounded px-3 py-2 pr-8 w-full"
+                    >
+                        <option value="">Semua Departemen</option>
+                        {departments.map((d) => (
+                        <option key={d.id} value={d.id}>{d.name}</option>
+                        ))}
+                    </select>
+                    <svg
+                        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                <div className="relative">
+                    <select
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        // className="border rounded px-3 py-2"
+                        className="appearance-none border rounded px-3 py-2 pr-8 w-full"
+                    >
+                        <option value="">Semua Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <svg
+                        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
                 {role === 'admin' && (
                     <Link
                     to="/employees/new"
