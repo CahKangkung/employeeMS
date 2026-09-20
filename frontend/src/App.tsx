@@ -3,6 +3,7 @@ import Login from './pages/login';
 import EmployeeList from './pages/EmployeeList';
 import EmployeeForm from './pages/EmployeeForm';
 import EmployeeDetail from './pages/EmployeeDetail';
+import ApiDocs from './pages/ApiDocs';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const token = localStorage.getItem('token');
@@ -22,6 +23,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/api-documentation" element={<ApiDocs />} />
                 <Route
                     path="/employees"
                     element={

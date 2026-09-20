@@ -61,6 +61,7 @@ function EmployeeList() {
         <div className="min-h-screen bg-gray-50 p-4 md:p-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Employee MS</h1>
+                <Link to="/api-documentation" className="text-sm text-gray-600 hover:underline">API Docs</Link>
                 <button onClick={handleLogout} className="text-sm text-red-600 hover:underline">
                     Logout
                 </button>
