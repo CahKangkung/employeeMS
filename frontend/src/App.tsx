@@ -1,12 +1,30 @@
-import { useState } from 'react'
-import './index.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/login';
+import EmployeeList from './pages/EmployeeList';
 
-function App() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <h1 className="text-2xl font-bold p-4">Employee Management System</h1>
-    </div>
-  )
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+    const token = localStorage.getItem('token');
+    return token ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
-export default App
+function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route
+                    path="/employees"
+                    element={
+                    <ProtectedRoute>
+                        <EmployeeList />
+                    </ProtectedRoute>
+                    }
+                />
+                <Route path="*" element={<Navigate to="/employees" replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
+export default App;
+

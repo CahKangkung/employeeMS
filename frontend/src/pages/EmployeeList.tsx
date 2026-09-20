@@ -1,0 +1,142 @@
+import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { getEmployees, deleteEmployee } from '../services/employee.service';
+import { getDepartments } from '../services/department.service';
+import type { Employee, Department } from '../types/employee';
+
+function EmployeeList() {
+    const [employees, setEmployees] = useState<Employee[]>([]);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [departmentId, setDepartmentId] = useState('');
+    const [status, setStatus] = useState('');
+    const role = localStorage.getItem('role');
+
+    const loadEmployees = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await getEmployees({
+                search: search || undefined,
+                departmentId: departmentId ? Number(departmentId) : undefined,
+                status: status || undefined,
+            });
+            setEmployees(res.data);
+        } finally {
+            setLoading(false);
+        }
+    }, [search, departmentId, status]);
+
+    useEffect(() => {
+        getDepartments().then(setDepartments);
+    }, []);
+
+    useEffect(() => {
+        const timeout = setTimeout(loadEmployees, 300); // debounce search
+        return () => clearTimeout(timeout);
+    }, [loadEmployees]);
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('Yakin hapus employee ini?')) return;
+        await deleteEmployee(id);
+        loadEmployees();
+    };
+
+    const handleLogout = () => {
+        localStorage.clear();
+        window.location.href = '/login';
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Employee MS</h1>
+                <button onClick={handleLogout} className="text-sm text-red-600 hover:underline">
+                    Logout
+                </button>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-3 mb-4">
+                <input
+                    type="text"
+                    placeholder="Cari nama/email..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="border rounded px-3 py-2 flex-1"
+                />
+                <select
+                    value={departmentId}
+                    onChange={(e) => setDepartmentId(e.target.value)}
+                    className="border rounded px-3 py-2"
+                >
+                    <option value="">Semua Departemen</option>
+                    {departments.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                    ))}
+                </select>
+                <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="border rounded px-3 py-2"
+                >
+                    <option value="">Semua Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                {role === 'admin' && (
+                    <Link
+                    to="/employees/new"
+                    className="bg-blue-600 text-white px-4 py-2 rounded text-center hover:bg-blue-700"
+                    >
+                    + Tambah
+                    </Link>
+                )}
+            </div>
+
+            <div className="bg-white rounded-lg shadow overflow-x-auto">
+                {loading ? (
+                    <p className="p-6 text-center text-gray-500">Loading...</p>
+                ) : employees.length === 0 ? (
+                    <p className="p-6 text-center text-gray-500">Belum ada data employee</p>
+                ) : (
+                    <table className="w-full text-sm">
+                        <thead className="bg-gray-100 text-left">
+                            <tr>
+                            <th className="p-3">Nama</th>
+                            <th className="p-3">Email</th>
+                            <th className="p-3">Departemen</th>
+                            <th className="p-3">Status</th>
+                            <th className="p-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {employees.map((emp) => (
+                                <tr key={emp.id} className="border-t">
+                                    <td className="p-3">{emp.fullName}</td>
+                                    <td className="p-3">{emp.email}</td>
+                                    <td className="p-3">{emp.department.name}</td>
+                                    <td className="p-3">
+                                        <span className={`px-2 py-1 rounded text-xs ${emp.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}`}>
+                                            {emp.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-3 space-x-2">
+                                        <Link to={`/employees/${emp.id}`} className="text-blue-600 hover:underline">Detail</Link>
+                                        {role === 'admin' && (
+                                            <>
+                                            <Link to={`/employees/${emp.id}/edit`} className="text-yellow-600 hover:underline">Edit</Link>
+                                            <button onClick={() => handleDelete(emp.id)} className="text-red-600 hover:underline">Hapus</button>
+                                            </>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default EmployeeList;
