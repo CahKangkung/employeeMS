@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --test",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
