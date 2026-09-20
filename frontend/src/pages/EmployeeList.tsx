@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getEmployees, deleteEmployee } from '../services/employee.service';
 import { getDepartments } from '../services/department.service';
 import type { Employee, Department } from '../types/employee';
+import { getErrorMessage } from '../utils/errorMessage';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -11,10 +12,12 @@ function EmployeeList() {
     const [search, setSearch] = useState('');
     const [departmentId, setDepartmentId] = useState('');
     const [status, setStatus] = useState('');
+    const [error, setError] = useState('');
     const role = localStorage.getItem('role');
 
     const loadEmployees = useCallback(async () => {
         setLoading(true);
+        setError('');
         try {
             const res = await getEmployees({
                 search: search || undefined,
@@ -22,6 +25,8 @@ function EmployeeList() {
                 status: status || undefined,
             });
             setEmployees(res.data);
+        } catch (err) {
+            setError(getErrorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -38,8 +43,13 @@ function EmployeeList() {
 
     const handleDelete = async (id: number) => {
         if (!confirm('Yakin hapus employee ini?')) return;
-        await deleteEmployee(id);
-        loadEmployees();
+        setError('');
+        try {
+            await deleteEmployee(id);
+            loadEmployees();
+        } catch (err) {
+            setError(getErrorMessage(err))
+        }
     };
 
     const handleLogout = () => {
@@ -55,6 +65,12 @@ function EmployeeList() {
                     Logout
                 </button>
             </div>
+
+            {error && (
+                <p className="bg-red-50 text-red-600 text-sm rounded px-3 py-2 mb-4">
+                    {error}
+                </p>
+            )}
 
             <div className="flex flex-col md:flex-row gap-3 mb-4">
                 <input

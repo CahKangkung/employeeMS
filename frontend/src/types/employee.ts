@@ -20,3 +20,11 @@ export interface EmployeeListResponse {
     page: number;
     limit: number;
 }
+
+export interface EmployeeInput {
+    fullName: string;
+    email: string;
+    phone?: string;
+    departmentId: number;
+    status?: string;
+}

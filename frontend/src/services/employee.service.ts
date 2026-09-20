@@ -1,5 +1,5 @@
 import api from './api';
-import type { EmployeeListResponse } from '../types/employee';
+import type { EmployeeListResponse, Employee, EmployeeInput } from '../types/employee';
 
 export interface EmployeeFilters {
     search?: string;
@@ -14,6 +14,18 @@ export async function getEmployees(filters: EmployeeFilters = {}): Promise<Emplo
     if (filters.status) params.set('status', filters.status);
 
     return api.get(`/employees?${params.toString()}`);
+}
+
+export async function getEmployeeById(id: number): Promise<Employee> {
+    return api.get(`/employees/${id}`);
+}
+
+export async function createEmployee(data: EmployeeInput): Promise<Employee> {
+    return api.post('/employees', data);
+}
+
+export async function updateEmployee(id: number, data: Partial<EmployeeInput>): Promise<Employee> {
+    return api.put(`/employees/${id}`, data);
 }
 
 export async function deleteEmployee(id: number): Promise<void> {

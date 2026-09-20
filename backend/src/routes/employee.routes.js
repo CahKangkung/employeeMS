@@ -45,7 +45,7 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
     try {
         const employee = await prisma.employee.create({
-            data: { fullName, email, phone, departmentId: Number(departmentId), status: status || 'active' },
+            data: { fullName, email: email.toLowerCase().trim(), phone, departmentId: Number(departmentId), status: status || 'active' },
         });
         await logAudit(req.user.id, 'CREATE', 'Employee', employee.id, JSON.stringify(req.body));
         res.status(201).json(employee);
