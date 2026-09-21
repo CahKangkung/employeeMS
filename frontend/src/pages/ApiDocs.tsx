@@ -21,6 +21,7 @@ const ENDPOINTS: EndpointDef[] = [
     { name: 'Export Employees CSV', method: 'GET', path: '/api/employees/export/csv', auth: true },
     { name: 'List Departments', method: 'GET', path: '/api/departments', auth: true },
     { name: 'Create Department', method: 'POST', path: '/api/departments', auth: true, bodyExample: '{\n  "name": ""\n}' },
+    { name: 'List Audit Log', method: 'GET', path: '/api/audit-log?page=1&limit=20', auth: true },
 ];
 
 function ApiDocs() {

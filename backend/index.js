@@ -35,6 +35,9 @@ app.use('/api/employees', employeeRoutes);
 const departmentRoutes = require('./src/routes/department.routes');
 app.use('/api/departments', departmentRoutes);
 
+const auditLogRoutes = require('./src/routes/auditLog.routes');
+app.use('/api/audit-log', auditLogRoutes);
+
 // Health
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
