@@ -144,6 +144,7 @@ Test mencakup: health check, login sukses, login gagal (kredensial salah).
 | GET | `/api/employees/export/csv` | ✓ | admin, viewer | Export data ke CSV |
 | GET | `/api/departments` | ✓ | admin, viewer | List department |
 | POST | `/api/departments` | ✓ | admin | Tambah department |
+| GET | `/api/audit-log` | ✓ | admin | List audit log (create/update/delete history) |
 
 Dokumentasi interaktif (mini Postman) tersedia di halaman **`/api-documentation`** pada frontend.
 
